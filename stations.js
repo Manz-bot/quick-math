@@ -1,0 +1,21 @@
+const STATIONS = {
+    barroque: { name: "Barroco", urls: ["https://strmreg.1.fm/baroque_mobile_mp3", "https://stream.srg-ssr.ch/m/rsc_de/aacp_96", "https://uk2.streamingpulse.com/ssl/vcr1/;", "https://baroquesonatasradio.stream.laut.fm/baroque_sonatas_radio?t302=2023-12-01_17-46-52&uuid=708826bc-c5a5-4fc6-8353-243e6bdd6a99", "https://streamingv2.shoutcast.com/Ambiance-classique", "http://148.251.43.231:8742/96.mp3"] },
+    coffee_shop: { name: "Café", urls: ["https://api.rofocus.com/audio/rofocus-coffee-shop-1.m4a", "https://api.rofocus.com/audio/rofocus-new-coffee-shop-3.mp3"] },
+    beach: { name: "Playa", urls: ["https://api.rofocus.com/audio/rofocus-beach.m4a", "https://api.rofocus.com/audio/rofocus-new-beach.mp3"] },
+    forest: { name: "Bosque", urls: ["https://api.rofocus.com/audio/rofocus-amazon-forest-river.m4a"] },
+    experimental_temple: { name: "Templo", urls: ["https://api.rofocus.com/audio/rofocus-exotic-calm.m4a"] },
+    rain: { name: "Lluvia", urls: ["https://api.rofocus.com/audio/rofocus-rainy-mountains.m4a", "https://api.rofocus.com/audio/rofocus-underwater.m4a"] },
+    campfire: { name: "Fogata", urls: ["https://api.rofocus.com/audio/rofocus-campfire-1.m4a", "https://api.rofocus.com/audio/rofocus-campfire-2.m4a"] },
+    morning_birds: { name: "Aves", urls: ["https://api.rofocus.com/audio/rofocus-morning-birds.m4a", "https://api.rofocus.com/audio/rofocus-morning-birds-2.m4a", "https://api.rofocus.com/audio/rofocus-morning-birds-3.m4a", "https://api.rofocus.com/audio/rofocus-new-calm-village.mp3"] },
+    student_campus: { name: "Campus", urls: ["https://api.rofocus.com/audio/rofocus-copenhagen-outdoors.m4a", "https://api.rofocus.com/audio/rofocus-bruges-students.m4a"] },
+    restaurants: { name: "Restaurante", urls: ["https://api.rofocus.com/audio/rofocus-rome-restaurant.m4a", "https://api.rofocus.com/audio/rofocus-college-campus-cafe.m4a"] },
+    dusk_woods: { name: "Noche", urls: ["https://api.rofocus.com/audio/rofocus-new-dusk-in-the-woods-long.mp3", "https://api.rofocus.com/audio/rofocus-dusk-woods.m4a"] },
+    light_wind: { name: "Viento", urls: ["https://api.rofocus.com/audio/rofocus-normal-wind-1.m4a", "https://api.rofocus.com/audio/rofocus-natural-wind.m4a", "https://api.rofocus.com/audio/rofocus-natural-wind-heavy.m4a", "https://api.rofocus.com/audio/rofocus-real-wind.m4a", "https://api.rofocus.com/audio/rofocus-stormy-wind.m4a"] },
+    mystical_nature: { name: "Naturaleza", urls: ["https://api.rofocus.com/audio/rofocus-new-experimental-nature.mp3", "https://api.rofocus.com/audio/rofocus-new-floating-space.mp3"] },
+    park_by_river: { name: "Río", urls: ["https://api.rofocus.com/audio/rofocus-new-park-by-the-river.mp3"] },
+    quiet_city: { name: "Ciudad", urls: ["https://api.rofocus.com/audio/rofocus-new-quiet-city-vibes-athens-greece-quiet.mp3", "https://api.rofocus.com/audio/rofocus-new-quiet-city-vibes.mp3", "https://api.rofocus.com/audio/rofocus-berlin-city-center.m4a", "https://api.rofocus.com/audio/rofocus-copenhagen-outdoors.m4a", "https://api.rofocus.com/audio/rofocus-busy-central-london.m4a"] },
+    waves: { name: "Olas", urls: ["https://api.rofocus.com/audio/rofocus-new-waves-1.mp3", "https://api.rofocus.com/audio/rofocus-new-waves-2.mp3"] },
+    lofi: { name: "Lofi", urls: ["https://usa9.fastcast4u.com/proxy/jamz?mp=/1", "https://ec3.yesstreaming.net:3755/stream"] },
+    anime: { name: "Anime", urls: ["https://cast.animenexus.net/radio/8000/animenexus", "https://kathy.torontocast.com:3060/;", "https://radio.stereoanime.net/listen/stereoanime/128", "https://boxradio-edge-01.streamafrica.net/anime"] },
+    phonk: { name: "Phonk", urls: ["https://stream-154.zeno.fm/90fvpb27u18uv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiI5MGZ2cGIyN3UxOHV2IiwiaG9zdCI6InN0cmVhbS0xNTQuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6IlJMR3BpWjA4VHoyWl9iamtqMnVyUFEiLCJpYXQiOjE3Mzk1ODkzOTUsImV4cCI6MTczOTU4OTQ1NX0.4isQarZzhjbSdvbTTAuSxyUi66QfzeJ37CXk74_p7DI", "https://s2.radio.co/s2b2b68744/listen", "https://stream-173.zeno.fm/yevnz3noouguv?zt=eyJhbGciOiJIUzI1NiJ9.eyJzdHJlYW0iOiJ5ZXZuejNub291Z3V2IiwiaG9zdCI6InN0cmVhbS0xNzMuemVuby5mbSIsInJ0dGwiOjUsImp0aSI6ImtGbUp0aGU5UzNlZ3Y5Z0pEVXZmVmciLCJpYXQiOjE3Mzk1OTAxOTcsImV4cCI6MTczOTU5MDI1N30.nVB0VX7OrBpddyiXGnCv6MNp_NMyQV1j3ve_8SnW15Y"] }
+};
