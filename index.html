@@ -1,0 +1,3000 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matemática Rápida</title>
+    <link rel="icon" type="image/x-icon"
+        href="https://lanavedeteseo.files.wordpress.com/2017/10/mate-icono-1er-ciclo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ========== CSS Variables ========== */
+        :root {
+            --bg-primary: #0a0a1a;
+            --bg-secondary: #12122a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --bg-card-hover: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.5);
+            --accent-primary: #7c3aed;
+            --accent-secondary: #06b6d4;
+            --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%);
+            --success: #22c55e;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border-radius: 16px;
+            --border-radius-sm: 8px;
+            --shadow-glow: 0 0 40px rgba(124, 58, 237, 0.3);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ========== Base Reset ========== */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            background-position: center center;
+            background-size: cover;
+        }
+
+        body {
+            height: 100vh;
+        }
+
+        p,
+        h1,
+        img,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            user-select: none;
+        }
+
+        /* ========== Screen System ========== */
+        .screen {
+            display: none;
+            height: 100vh;
+            padding: 1rem;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .screen.active {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes countDown {
+            0% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        /* ========== Menu Screen ========== */
+        #menu-screen {
+            gap: 0.75rem;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-glow);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .title {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 400;
+        }
+
+        /* ========== Card Container ========== */
+        .menu-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ========== Difficulty Selector ========== */
+        .difficulty-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .difficulty-btn {
+            padding: 0.6rem 0.4rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .difficulty-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: var(--bg-card-hover);
+        }
+
+        .difficulty-btn.selected {
+            border-color: var(--accent-primary);
+            background: rgba(124, 58, 237, 0.2);
+            color: var(--text-primary);
+        }
+
+        .difficulty-btn .icon {
+            font-size: 1.2rem;
+        }
+
+        .difficulty-btn .time {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .difficulty-btn.selected .time {
+            color: var(--accent-secondary);
+        }
+
+        /* ========== Mode Selector ========== */
+        .mode-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-btn {
+            padding: 0.7rem 0.75rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .mode-btn:hover {
+            border-color: rgba(255, 255, 255, 0.3);
+            background: var(--bg-card-hover);
+        }
+
+        .mode-btn.selected {
+            border-color: var(--accent-secondary);
+            background: rgba(6, 182, 212, 0.2);
+            color: var(--text-primary);
+        }
+
+        .mode-btn .icon {
+            font-size: 1.3rem;
+        }
+
+        .mode-btn .description {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .mode-btn.selected .description {
+            color: var(--accent-secondary);
+        }
+
+        /* ========== Chapter Selector ========== */
+        .chapter-selector {
+            margin-top: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-selector-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chapter-selector-toggle:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .chapter-selector-toggle .toggle-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .chapter-selector-toggle .toggle-icon {
+            transition: var(--transition);
+        }
+
+        .chapter-selector-toggle.open .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        .chapter-selector-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .chapter-selector-content.open {
+            max-height: 350px;
+            overflow-y: auto;
+        }
+
+        .chapter-actions {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+        }
+
+        .chapter-action-btn {
+            flex: 1;
+            padding: 0.4rem;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius-sm);
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: inherit;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chapter-action-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--accent-primary);
+        }
+
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.4rem;
+            padding: 0.5rem 0;
+        }
+
+        .chapter-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.65rem;
+        }
+
+        .chapter-checkbox:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .chapter-checkbox.selected {
+            border-color: var(--accent-primary);
+            background: rgba(124, 58, 237, 0.15);
+        }
+
+        .chapter-checkbox .check-icon {
+            width: 12px;
+            height: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .chapter-checkbox.selected .check-icon {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+
+        .chapter-checkbox .ch-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* ========== Start Button ========== */
+        .start-btn,
+        .next-btn,
+        .submit-btn {
+            width: 100%;
+            padding: 0.85rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius-sm);
+            background: var(--accent-gradient);
+            color: white;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .start-btn::before,
+        .next-btn::before,
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .start-btn:hover::before,
+        .next-btn:hover::before,
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn:hover,
+        .next-btn:hover,
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(124, 58, 237, 0.4);
+        }
+
+        .start-btn:active,
+        .next-btn:active,
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* ========== Info Cards ========== */
+        .info-row {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .info-card .icon {
+            font-size: 1rem;
+        }
+
+        /* ========== Exercise Screen ========== */
+        #exercise-screen {
+            gap: 0.5rem;
+            justify-content: flex-start;
+            padding-top: 1rem;
+        }
+
+        .exercise-header {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .chapter-badge {
+            background: var(--accent-gradient);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .exercise-count {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .timer-display.warning {
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .timer-display.danger {
+            border-color: var(--error);
+            color: var(--error);
+            animation: pulse 0.5s infinite;
+        }
+
+        .timer-icon {
+            font-size: 1.2rem;
+        }
+
+        .timer-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            width: 100%;
+            max-width: 600px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-gradient);
+            transition: width 0.3s ease;
+        }
+
+        /* Question Card */
+        .question-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .question-number {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .question-text {
+            position: relative;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: var(--border-radius-sm);
+        }
+
+        /* Anti-screenshot noise background */
+        .noise-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            object-fit: cover;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Textured text with frame.png mask - prevents screenshot */
+        .textured-text {
+            position: relative;
+            z-index: 1;
+            font-size: 2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+            padding: 0.5rem 1rem;
+
+            /* Frame texture as text fill */
+            background-image: url('./frame.png');
+            background-size: cover;
+            background-position: center;
+
+            /* Clip background to text shape */
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            /* Make text color transparent to show texture */
+            color: transparent;
+
+            /* Subtle outline for visibility */
+            -webkit-text-stroke: 0.5px rgba(255, 255, 255, 0.2);
+
+            /* Shadow for depth */
+            filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0));
+
+            /* Prevent selection/copy */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            cursor: default;
+        }
+
+        /* Write Mode Input */
+        .answer-input-container {
+            margin-bottom: 1rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 200px;
+            padding: 0.75rem 1rem;
+            font-size: 1.2rem;
+            font-family: inherit;
+            font-weight: 600;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-sm);
+            color: var(--text-primary);
+            transition: var(--transition);
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.3);
+        }
+
+        /* Hidden utility class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Symbol Buttons for Write Mode */
+        .symbol-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .symbol-btn {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 40px;
+        }
+
+        .symbol-btn:hover {
+            background: rgba(124, 58, 237, 0.2);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        /* Pause Overlay */
+        .pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 26, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .pause-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .pause-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+
+        .pause-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .pause-hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        /* Choice Mode Buttons */
+        .choices-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .choice-btn {
+            position: relative;
+            padding: 1rem 1rem 1rem 2rem;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            border-radius: var(--border-radius-sm);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .choice-number {
+            position: absolute;
+            left: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1.4rem;
+            height: 1.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(124, 58, 237, 0.3);
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        .choice-btn:hover {
+            border-color: var(--accent-primary);
+            background: rgba(124, 58, 237, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.selected {
+            border-color: var(--accent-secondary);
+            background: rgba(6, 182, 212, 0.2);
+        }
+
+        .choice-btn.correct {
+            border-color: var(--success);
+            background: rgba(34, 197, 94, 0.2);
+        }
+
+        .choice-btn.incorrect {
+            border-color: var(--error);
+            background: rgba(239, 68, 68, 0.2);
+        }
+
+        /* Chapter Intro Overlay */
+        .chapter-intro {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 26, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .chapter-intro.hidden {
+            display: none;
+        }
+
+        .chapter-number {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .chapter-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .chapter-countdown {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-secondary);
+            animation: countDown 1s ease-out infinite;
+        }
+
+        /* ========== Chapter Results Screen ========== */
+        #chapter-results-screen {
+            gap: 1rem;
+        }
+
+        .results-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 500px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .results-score {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .results-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--border-radius-sm);
+            border-left: 3px solid;
+        }
+
+        .result-item.correct {
+            border-color: var(--success);
+        }
+
+        .result-item.incorrect {
+            border-color: var(--error);
+        }
+
+        .result-question {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .result-answer {
+            font-size: 0.85rem;
+        }
+
+        .result-answer.correct {
+            color: var(--success);
+        }
+
+        .result-answer.incorrect {
+            color: var(--error);
+        }
+
+        .accumulated-score {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(124, 58, 237, 0.1);
+            border-radius: var(--border-radius-sm);
+            margin-top: 1rem;
+        }
+
+        .accumulated-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .accumulated-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        /* Chapter Results Enhancements */
+        .chapter-complete-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .chapter-name-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .percentage-score {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .chapter-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        .stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .result-time {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-left: 0.5rem;
+        }
+
+        /* ========== Final Results Screen ========== */
+        #final-results-screen {
+            gap: 1rem;
+        }
+
+        .final-score-display {
+            text-align: center;
+        }
+
+        .final-score-label {
+            font-size: 1rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .final-score-value {
+            font-size: 4rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .final-time {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        /* Final Results Enhancements */
+        .grade-badge {
+            display: inline-block;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .grade-badge.excellent {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .grade-badge.good {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            color: white;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.4);
+        }
+
+        .grade-badge.average {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+        }
+
+        .grade-badge.needs-work {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .final-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            margin: 1rem 0;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .final-stat-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--border-radius-sm);
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+        }
+
+        .final-stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-stat-label {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        /* ========== Top Bar (Level & Actions) ========== */
+        .top-bar {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            right: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .level-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .level-badge {
+            background: var(--accent-gradient);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .xp-container {
+            width: 100px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .xp-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .xp-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.55rem;
+            font-weight: 600;
+            color: white;
+            white-space: nowrap;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            font-size: 1.1rem;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* ========== Records Screen ========== */
+        .records-container {
+            width: 100%;
+            max-width: 500px;
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
+        }
+
+        .record-card {
+            background: var(--bg-card);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: var(--border-radius-md);
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .record-title {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 0.25rem;
+        }
+
+        .record-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .record-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 0.4rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: var(--border-radius-sm);
+        }
+
+        .record-rank {
+            font-weight: 700;
+            color: var(--accent-secondary);
+            margin-right: 0.5rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--accent-gradient);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: bold;
+        }
+
+        .notification.show {
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .chapter-group {
+            margin-bottom: 0.75rem;
+        }
+
+        .chapter-group-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: rgba(124, 58, 237, 0.15);
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            margin-bottom: 0.25rem;
+            transition: var(--transition);
+        }
+
+        .chapter-group-header:hover {
+            background: rgba(124, 58, 237, 0.25);
+        }
+
+        .chapter-group-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chapter-group-score {
+            font-size: 0.8rem;
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .chapter-group-items {
+            padding-left: 0.5rem;
+        }
+
+        @keyframes celebrate {
+            0% {
+                transform: scale(1);
+            }
+
+            25% {
+                transform: scale(1.1) rotate(-3deg);
+            }
+
+            50% {
+                transform: scale(1.1) rotate(3deg);
+            }
+
+            75% {
+                transform: scale(1.1) rotate(-3deg);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .celebrate {
+            animation: celebrate 0.6s ease;
+        }
+
+        /* ========== Floating Particles ========== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 15s infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.3;
+            }
+
+            90% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 600px) {
+            .question-text {
+                font-size: 1.4rem;
+            }
+
+            .choices-container {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.5rem;
+            }
+
+            .choice-btn {
+                padding: 0.75rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+
+<!-- Floating Particles Background -->
+<div class="particles" id="particles"></div>
+
+<!-- Pause Overlay -->
+<div class="pause-overlay" id="pause-overlay">
+    <div class="pause-icon">⏸️</div>
+    <div class="pause-text">PAUSADO</div>
+    <div class="pause-hint">Perdoname Jairi-chan 😭. Presiona ESPACIO para continuar</div>
+</div>
+
+<!-- ========== MENU SCREEN ========== -->
+<section id="menu-screen" class="screen active">
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="level-info">
+            <span class="level-badge">Nvl <span id="user-level">1</span></span>
+            <div class="xp-container">
+                <div class="xp-bar" id="user-xp-bar" style="width: 0%"></div>
+                <span class="xp-text"><span id="user-xp">0</span>/<span id="next-level-xp">100</span> XP</span>
+            </div>
+        </div>
+        <div class="top-actions">
+            <button class="icon-btn" id="tutorial-btn" title="Ver Tutorial">📺</button>
+            <button class="icon-btn" id="records-btn" title="Récords">🏆</button>
+            <button class="icon-btn" id="mute-btn" title="Sonido">🔊</button>
+        </div>
+    </div>
+
+    <div class="logo-container">
+        <div class="logo-icon">📐</div>
+        <h1 class="title">Matemática Rápida</h1>
+        <p class="subtitle">Resuelve con rapidez estos ejercicios matemáticos xd</p>
+    </div>
+
+    <div class="menu-card">
+        <h2 class="section-title">🎯 Dificultad</h2>
+        <div class="difficulty-selector">
+            <button class="difficulty-btn" data-difficulty="easy">
+                <span class="icon">🌱</span>
+                <span>Fácil</span>
+                <span class="time">60s por pregunta</span>
+            </button>
+            <button class="difficulty-btn selected" data-difficulty="medium">
+                <span class="icon">⚡</span>
+                <span>Medio</span>
+                <span class="time">30s por pregunta</span>
+            </button>
+            <button class="difficulty-btn" data-difficulty="hard">
+                <span class="icon">🔥</span>
+                <span>Difícil</span>
+                <span class="time">15s por pregunta</span>
+            </button>
+        </div>
+
+        <h2 class="section-title">✏️ Modo de Respuesta</h2>
+        <div class="mode-selector">
+            <button class="mode-btn selected" data-mode="write">
+                <span class="icon">⌨️</span>
+                <span>Escribir</span>
+                <span class="description">Escribe la respuesta</span>
+            </button>
+            <button class="mode-btn" data-mode="choice">
+                <span class="icon">🔘</span>
+                <span>Alternativas</span>
+                <span class="description">Elige entre 4 opciones</span>
+            </button>
+        </div>
+
+        <!-- Chapter Selector -->
+        <div class="chapter-selector">
+            <div class="chapter-selector-toggle" id="chapter-selector-toggle">
+                <span class="toggle-text">📚 Capítulos Seleccionados (7/19)</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="chapter-selector-content" id="chapter-selector-content">
+                <div class="chapter-actions">
+                    <button class="chapter-action-btn" id="select-all-chapters">✓ Todos</button>
+                    <button class="chapter-action-btn" id="deselect-all-chapters">✗ Ninguno</button>
+                </div>
+                <div class="chapter-grid" id="chapter-grid">
+                    <!-- Chapters will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <button class="start-btn" id="start-btn">
+            🚀 Empezar
+        </button>
+    </div>
+
+    <div class="info-row">
+        <div class="info-card">
+            <span class="icon">📚</span>
+            <span>20 Capítulos</span>
+        </div>
+        <div class="info-card">
+            <span class="icon">❓</span>
+            <span>~80 Ejercicios</span>
+        </div>
+        <div class="info-card">
+            <span class="icon">⏱️</span>
+            <span>Tiempo Límite</span>
+        </div>
+    </div>
+</section>
+
+<!-- ========== EXERCISE SCREEN ========== -->
+<section id="exercise-screen" class="screen">
+    <!-- Chapter Intro Overlay -->
+    <div class="chapter-intro hidden" id="chapter-intro">
+        <div class="chapter-number">Capítulo <span id="intro-chapter-num">1</span></div>
+        <div class="chapter-icon" id="intro-chapter-icon">➖</div>
+        <div class="chapter-name" id="intro-chapter-name">Resta</div>
+        <div class="chapter-countdown" id="intro-countdown">3</div>
+    </div>
+
+    <!-- Exercise Header -->
+    <div class="exercise-header">
+        <div class="progress-info">
+            <span class="chapter-badge" id="current-chapter">Cap. 1: Resta</span>
+            <span class="exercise-count" id="exercise-count">Ejercicio 1 de 3</span>
+        </div>
+        <div class="timer-display" id="timer-display">
+            <span class="timer-icon">⏱️</span>
+            <span class="timer-text" id="timer-text">30</span>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar-container">
+        <div class="progress-bar" id="progress-bar" style="width: 0%"></div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card">
+        <div class="question-number" id="question-number">Pregunta 1</div>
+        <div class="question-text" id="question-text">
+            <img class="noise-background" src="noise2.gif" alt="">
+            <span class="textured-text" id="question-display">45 - 23 = ?</span>
+        </div>
+
+        <!-- Write Mode -->
+        <div class="answer-input-container" id="write-mode">
+            <input type="text" class="answer-input" id="answer-input" placeholder="?" autocomplete="off">
+            <div class="symbol-buttons">
+                <button class="symbol-btn" data-symbol="√" title="Raíz cuadrada">√</button>
+                <button class="symbol-btn" data-symbol="/" title="Fracción">/</button>
+                <button class="symbol-btn" data-symbol="²" title="Al cuadrado">²</button>
+                <button class="symbol-btn" data-symbol="³" title="Al cubo">³</button>
+                <button class="symbol-btn" data-symbol="K" title="K (variable)">K</button>
+                <button class="symbol-btn" data-symbol="." title="Decimal">.</button>
+                <button class="symbol-btn" data-symbol="-" title="Negativo">−</button>
+                <button class="symbol-btn" data-symbol="π" title="Pi">π</button>
+            </div>
+        </div>
+
+        <!-- Choice Mode -->
+        <div class="choices-container hidden" id="choice-mode">
+            <button class="choice-btn" data-choice="0"><span class="choice-number">1</span><span
+                    class="choice-value">22</span></button>
+            <button class="choice-btn" data-choice="1"><span class="choice-number">2</span><span
+                    class="choice-value">23</span></button>
+            <button class="choice-btn" data-choice="2"><span class="choice-number">3</span><span
+                    class="choice-value">21</span></button>
+            <button class="choice-btn" data-choice="3"><span class="choice-number">4</span><span
+                    class="choice-value">24</span></button>
+        </div>
+
+        <button class="submit-btn" id="submit-btn">Confirmar ✓</button>
+    </div>
+</section>
+
+<!-- ========== CHAPTER RESULTS SCREEN ========== -->
+<section id="chapter-results-screen" class="screen">
+    <div class="results-header">
+        <div class="chapter-complete-icon" id="chapter-complete-icon">🎉</div>
+        <div class="chapter-name-badge" id="chapter-name-badge">
+            <span id="chapter-icon">➖</span>
+            <span id="chapter-name-text">Resta</span>
+        </div>
+        <div class="results-title" id="chapter-results-title">Capítulo 1 Completado</div>
+        <div class="results-score" id="chapter-score">3/5</div>
+        <div class="percentage-score" id="chapter-percentage">60%</div>
+    </div>
+
+    <div class="chapter-stats" id="chapter-stats">
+        <div class="stat-item">
+            <span class="stat-value" id="stat-correct">3</span>
+            <span class="stat-label">Correctas</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value" id="stat-incorrect">2</span>
+            <span class="stat-label">Incorrectas</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-value" id="stat-avg-time">8s</span>
+            <span class="stat-label">Tiempo Prom.</span>
+        </div>
+    </div>
+
+    <div class="results-card">
+        <div class="results-list" id="chapter-results-list">
+            <!-- Results will be populated dynamically -->
+        </div>
+
+        <div class="accumulated-score">
+            <div class="accumulated-label">Puntaje Acumulado</div>
+            <div class="accumulated-value" id="accumulated-score">3/5</div>
+        </div>
+    </div>
+
+    <button class="next-btn" id="next-chapter-btn">Siguiente Capítulo →</button>
+</section>
+
+<!-- ========== FINAL RESULTS SCREEN ========== -->
+<section id="final-results-screen" class="screen">
+    <div class="final-score-display" id="final-score-display">
+        <div class="final-score-label">Puntaje Final</div>
+        <div class="final-score-value" id="final-score">45/50</div>
+        <div class="grade-badge" id="grade-badge">Excelente</div>
+        <div class="final-time" id="final-time">Tiempo total: 12:34</div>
+    </div>
+
+    <div class="final-stats-grid" id="final-stats-grid">
+        <div class="final-stat-card">
+            <div class="final-stat-value" id="final-correct">45</div>
+            <div class="final-stat-label">Correctas</div>
+        </div>
+        <div class="final-stat-card">
+            <div class="final-stat-value" id="final-total">50</div>
+            <div class="final-stat-label">Total</div>
+        </div>
+        <div class="final-stat-card">
+            <div class="final-stat-value" id="final-avg-time">12s</div>
+            <div class="final-stat-label">Prom/Preg</div>
+        </div>
+        <div class="final-stat-card">
+            <div class="final-stat-value" id="final-accuracy">90%</div>
+            <div class="final-stat-label">Precisión</div>
+        </div>
+    </div>
+
+    <div class="results-card" id="final-results-card" style="max-height: 40vh;">
+        <div class="results-list" id="final-results-list">
+            <!-- All results will be populated dynamically -->
+        </div>
+    </div>
+
+    <button class="start-btn" id="restart-btn">🔄 Volver a Jugar</button>
+</section>
+
+</section>
+
+<!-- ========== RECORDS SCREEN ========== -->
+<section id="records-screen" class="screen">
+    <h2 class="section-title">🏆 Récords y Logros</h2>
+    <div class="records-container" id="records-content">
+        <!-- Populated via JS -->
+    </div>
+    <div style="padding: 1rem; width: 100%;">
+        <button class="next-btn" id="records-back-btn">← Volver al Menú</button>
+    </div>
+</section>
+
+<!-- ========== TUTORIAL SCREEN ========== -->
+<section id="tutorial-screen" class="screen">
+    <h2 class="section-title">📺 Video Tutorial</h2>
+    <div class="video-wrapper"
+        style="width: 100%; max-width: 900px; height: 60vh; background: rgba(0,0,0,0.5); border-radius: var(--border-radius-md); overflow: hidden; display: flex; justify-content: center; align-items: center;">
+        <div id="video-container" style="width: 100%; height: 100%;"></div>
+    </div>
+    <div style="padding: 1rem; width: 100%;">
+        <button class="next-btn" id="tutorial-back-btn">← Volver al Menú</button>
+    </div>
+</section>
+
+<!-- ========== NOTIFICATION ========== -->
+<div class="notification" id="notification">
+    <span class="notif-icon">🎉</span>
+    <span class="notif-text">¡Subiste de Nivel!</span>
+</div>
+
+<script>
+    // ========== Sound Manager ==========
+    const SoundManager = {
+        audioCtx: null,
+        isMuted: false,
+
+        init() {
+            if (!this.audioCtx) {
+                this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (this.audioCtx.state === 'suspended') {
+                this.audioCtx.resume();
+            }
+        },
+
+        playTone(freq, type, duration, volume = 0.1) {
+            if (this.isMuted || !this.audioCtx) return;
+            const osc = this.audioCtx.createOscillator();
+            const gain = this.audioCtx.createGain();
+            osc.frequency.value = freq;
+            osc.type = type;
+            osc.connect(gain);
+            gain.connect(this.audioCtx.destination);
+
+            gain.gain.setValueAtTime(volume, this.audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.00001, this.audioCtx.currentTime + duration);
+
+            osc.start();
+            osc.stop(this.audioCtx.currentTime + duration);
+        },
+
+        click() { this.playTone(800, 'sine', 0.1, 0.05); },
+        success() {
+            this.playTone(523.25, 'sine', 0.1, 0.1); // C5
+            setTimeout(() => this.playTone(659.25, 'sine', 0.2, 0.1), 100); // E5
+        },
+        error() {
+            this.playTone(150, 'sawtooth', 0.3, 0.1);
+        },
+        levelUp() {
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C Major
+            notes.forEach((f, i) => setTimeout(() => this.playTone(f, 'square', 0.3, 0.05), i * 100));
+        }
+    };
+
+    // ========== Persistence & Levels ==========
+    const Persistence = {
+        save() {
+            const data = {
+                xp: GameState.xp,
+                level: GameState.level,
+                highScores: GameState.highScores,
+                sessionHistory: GameState.sessionHistory
+            };
+            localStorage.setItem('matematica_rapida_save', JSON.stringify(data));
+        },
+        load() {
+            const saved = localStorage.getItem('matematica_rapida_save');
+            if (saved) {
+                const data = JSON.parse(saved);
+                GameState.xp = data.xp || 0;
+                GameState.level = data.level || 1;
+                GameState.highScores = data.highScores || [];
+                GameState.sessionHistory = data.sessionHistory || [];
+                updateLevelUI();
+            }
+        }
+    };
+
+    function updateLevelUI() {
+        const nextLevelXp = GameState.level * 500;
+        document.getElementById('user-level').textContent = GameState.level;
+        document.getElementById('user-xp-bar').style.width = `${(GameState.xp / nextLevelXp) * 100}%`;
+        document.getElementById('user-xp').textContent = GameState.xp;
+        document.getElementById('next-level-xp').textContent = nextLevelXp;
+    }
+
+    function checkLevelUp() {
+        const nextLevelXp = GameState.level * 500;
+        if (GameState.xp >= nextLevelXp) {
+            GameState.xp -= nextLevelXp;
+            GameState.level++;
+            Persistence.save();
+            updateLevelUI();
+            SoundManager.levelUp();
+
+            // Show notification
+            const notif = document.getElementById('notification');
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 3000);
+        }
+    }
+
+    // ========== Game State ==========
+    const GameState = {
+        xp: 0,
+        level: 1,
+        highScores: [],
+        sessionHistory: [],
+
+        difficulty: 'medium',
+        mode: 'write',
+
+        difficultySettings: {
+            easy: { time: 60, multiplier: 0.5 },
+            medium: { time: 30, multiplier: 1 },
+            hard: { time: 15, multiplier: 1.5 }
+        },
+
+        chapters: [
+            { id: 1, name: 'Resta', icon: '➖', exerciseCount: 3 },
+            { id: 2, name: 'Multiplicación x2', icon: '✖️', exerciseCount: 5 },
+            { id: 3, name: 'Multiplicación x3', icon: '✖️', exerciseCount: 5 },
+            { id: 4, name: 'Potenciación', icon: '²', exerciseCount: 5 },
+            { id: 5, name: 'Raíz', icon: '√', exerciseCount: 4 },
+            { id: 6, name: 'Porcentaje', icon: '%', exerciseCount: 4 },
+            { id: 7, name: 'División', icon: '÷', exerciseCount: 3 },
+            { id: 8, name: 'Trigonometría', icon: '📐', exerciseCount: 5 },
+            { id: 9, name: 'Ecuaciones', icon: 'x²', exerciseCount: 2 },
+            { id: 10, name: 'Triángulos', icon: '△', exerciseCount: 3 },
+            { id: 11, name: 'Fracciones', icon: '½', exerciseCount: 5 },
+            { id: 12, name: 'Áreas', icon: '⬛', exerciseCount: 4 },
+            { id: 13, name: 'Op. Combinadas', icon: '🔢', exerciseCount: 4 },
+            { id: 14, name: 'Estimación', icon: '≈', exerciseCount: 4 },
+            { id: 15, name: 'Fracción→Decimal', icon: '🔄', exerciseCount: 4 },
+            { id: 16, name: 'Decimal→Fracción', icon: '↩️', exerciseCount: 4 },
+            { id: 17, name: 'MCM y MCD', icon: '🔗', exerciseCount: 4 },
+            { id: 18, name: 'Potencias de 10', icon: '10ⁿ', exerciseCount: 4 },
+            { id: 19, name: 'Logaritmos', icon: 'log', exerciseCount: 4 },
+            { id: 20, name: 'Regla de Tres', icon: '⚖️', exerciseCount: 4 }
+        ],
+
+        // Selected chapters for gameplay (default: first 7)
+        selectedChapters: [1, 2, 3, 4, 5, 6, 7],
+
+        currentChapter: 0,
+        currentExercise: 0,
+        chapterExercises: [],
+        allResults: [],
+        chapterResults: [],
+        totalCorrect: 0,
+        totalExercises: 0,
+
+        timeRemaining: 0,
+        timerInterval: null,
+        questionStartTime: null,
+        totalStartTime: null,
+        selectedChoice: null
+    };
+
+    // ========== Utility Functions ==========
+    function random(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // ========== Screen Management ==========
+    function showScreen(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+    }
+
+    // ========== Exercise Generators ==========
+    function generateExercise(chapterId) {
+        const mult = GameState.difficultySettings[GameState.difficulty].multiplier;
+        let question, answer, alternatives;
+
+        switch (chapterId) {
+            case 1: // Resta
+                const a1 = random(Math.floor(100 * mult), Math.floor(999 * mult));
+                const b1 = random(Math.floor(100 * mult), Math.floor(a1));
+                answer = a1 - b1;
+                question = `${a1} − ${b1}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 2: // Multiplicación x2
+                const a2 = random(Math.floor(10 * mult), Math.floor(99 * mult));
+                const b2 = random(Math.floor(10 * mult), Math.floor(99 * mult));
+                answer = a2 * b2;
+                question = `${a2} × ${b2}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 3: // Multiplicación x3
+                const a3 = random(Math.floor(100 * mult), Math.floor(500 * mult));
+                const b3 = random(Math.floor(10 * mult), Math.floor(99 * mult));
+                answer = a3 * b3;
+                question = `${a3} × ${b3}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 4: // Potenciación
+                const a4 = random(Math.floor(10 * mult), Math.floor(30 * mult));
+                answer = a4 * a4;
+                question = `${a4}²`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 5: // Raíz
+                const r5 = random(Math.floor(10 * mult), Math.floor(30 * mult));
+                answer = r5;
+                question = `√${r5 * r5}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 6: // Porcentaje
+                const perc = [10, 20, 25, 50, 75][random(0, 4)];
+                const val = random(Math.floor(100 * mult), Math.floor(500 * mult));
+                answer = (perc / 100) * val;
+                question = `${perc}% de ${val}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 7: // División
+                const divisor = random(2, 12);
+                const quotient = random(Math.floor(10 * mult), Math.floor(100 * mult));
+                const dividend = divisor * quotient;
+                answer = quotient;
+                question = `${dividend} ÷ ${divisor}`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 8: // Trigonometría
+                const trigTable = [
+                    { q: 'Sen(30°)', a: '1/2' },
+                    { q: 'Sen(45°)', a: '√2/2' },
+                    { q: 'Sen(60°)', a: '√3/2' },
+                    { q: 'Cos(30°)', a: '√3/2' },
+                    { q: 'Cos(45°)', a: '√2/2' },
+                    { q: 'Cos(60°)', a: '1/2' },
+                    { q: 'Tan(45°)', a: '1' },
+                    { q: 'Sen(90°)', a: '1' },
+                    { q: 'Cos(0°)', a: '1' }
+                ];
+                const trig = trigTable[random(0, trigTable.length - 1)];
+                answer = trig.a;
+                question = trig.q;
+                alternatives = shuffle([trig.a, '1/2', '√2/2', '√3/2', '1', '0'].filter(x => x !== trig.a)).slice(0, 3);
+                alternatives.push(trig.a);
+                alternatives = shuffle(alternatives);
+                break;
+
+            case 9: // Ecuaciones cuadráticas
+                const x1 = random(-5, 5);
+                const x2 = random(-5, 5);
+                const sumRoots = -(x1 + x2);
+                const prodRoots = x1 * x2;
+                answer = `${x1}, ${x2}`;
+                question = `x² ${sumRoots >= 0 ? '+' : ''}${sumRoots}x ${prodRoots >= 0 ? '+' : ''}${prodRoots} = 0`;
+                alternatives = [
+                    `${x1}, ${x2}`,
+                    `${x1 + 1}, ${x2 - 1}`,
+                    `${x1 - 1}, ${x2 + 1}`,
+                    `${-x1}, ${-x2}`
+                ];
+                alternatives = shuffle(alternatives);
+                break;
+
+            case 10: // Triángulos notables
+                const triangles = [
+                    { q: '30°-60°: Hipotenusa si cateto menor = K', a: '2K' },
+                    { q: '45°-45°: Hipotenusa si cateto = K', a: 'K√2' },
+                    { q: '37°-53°: Hipotenusa si cateto menor = 3K', a: '5K' }
+                ];
+                const tri = triangles[random(0, triangles.length - 1)];
+                answer = tri.a;
+                question = tri.q;
+                alternatives = shuffle(['2K', 'K√2', 'K√3', '5K', '4K', '3K'].filter(x => x !== tri.a)).slice(0, 3);
+                alternatives.push(tri.a);
+                alternatives = shuffle(alternatives);
+                break;
+
+            case 11: // Fracciones
+                const num1 = random(1, 9);
+                const den1 = random(2, 10);
+                const num2 = random(1, 9);
+                const den2 = random(2, 10);
+                const fracOp = random(0, 1) ? '+' : '−';
+                const resultNum = fracOp === '+' ? (num1 * den2 + num2 * den1) : (num1 * den2 - num2 * den1);
+                const resultDen = den1 * den2;
+                answer = `${resultNum}/${resultDen}`;
+                question = `${num1}/${den1} ${fracOp} ${num2}/${den2}`;
+                alternatives = generateSimilarFractions(resultNum, resultDen, 4);
+                break;
+
+            case 12: // Áreas
+                const shapes = [
+                    () => {
+                        const l = random(5, 20);
+                        return { q: `Área cuadrado (lado=${l})`, a: l * l };
+                    },
+                    () => {
+                        const l = random(5, 15);
+                        const w = random(5, 15);
+                        return { q: `Área rectángulo (${l}×${w})`, a: l * w };
+                    },
+                    () => {
+                        const b = random(5, 15);
+                        const h = random(5, 15);
+                        return { q: `Área triángulo (b=${b}, h=${h})`, a: (b * h) / 2 };
+                    }
+                ];
+                const shape = shapes[random(0, shapes.length - 1)]();
+                answer = shape.a;
+                question = shape.q;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 13: // Operaciones Combinadas (PEMDAS)
+                const opTypes = [
+                    () => {
+                        const a = random(2, 10);
+                        const b = random(2, 10);
+                        const c = random(2, 5);
+                        const d = random(1, 20);
+                        const result = (a + b) * c - d;
+                        return { q: `(${a} + ${b}) × ${c} - ${d}`, a: result };
+                    },
+                    () => {
+                        const a = random(10, 30);
+                        const b = random(2, 5);
+                        const c = random(2, 8);
+                        const d = random(2, 5);
+                        const result = a - b * c + d;
+                        return { q: `${a} - ${b} × ${c} + ${d}`, a: result };
+                    },
+                    () => {
+                        const a = random(2, 6);
+                        const b = random(2, 6);
+                        const c = random(2, 4);
+                        const result = a * b + c * c;
+                        return { q: `${a} × ${b} + ${c}²`, a: result };
+                    },
+                    () => {
+                        const a = random(20, 50);
+                        const b = random(2, 5);
+                        const c = random(3, 8);
+                        const result = a / b + c;
+                        return { q: `${a} ÷ ${b} + ${c}`, a: result };
+                    }
+                ];
+                const combinedOp = opTypes[random(0, opTypes.length - 1)]();
+                answer = combinedOp.a;
+                question = combinedOp.q;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 14: // Estimación
+                const estTypes = [
+                    () => {
+                        const a = random(45, 55) * 10 - random(1, 9); // e.g., 498
+                        const b = random(18, 25);
+                        const rounded = Math.round(a / 100) * 100 * Math.round(b / 10) * 10 / 10;
+                        const actual = a * b;
+                        return { q: `${a} × ${b} ≈ ?`, a: Math.round(actual / 1000) * 1000 };
+                    },
+                    () => {
+                        const a = random(95, 105) * 10 - random(1, 9);
+                        const b = random(8, 12);
+                        const actual = a * b;
+                        return { q: `${a} × ${b} ≈ ?`, a: Math.round(actual / 100) * 100 };
+                    },
+                    () => {
+                        const a = random(190, 210);
+                        const b = random(45, 55);
+                        const actual = a + b;
+                        return { q: `${a} + ${b} ≈ ?`, a: Math.round(actual / 10) * 10 };
+                    }
+                ];
+                const est = estTypes[random(0, estTypes.length - 1)]();
+                answer = est.a;
+                question = est.q;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 15: // Fracción a Decimal
+                const fracToDecTable = [
+                    { q: '1/2', a: '0.5' },
+                    { q: '1/4', a: '0.25' },
+                    { q: '3/4', a: '0.75' },
+                    { q: '1/5', a: '0.2' },
+                    { q: '2/5', a: '0.4' },
+                    { q: '3/5', a: '0.6' },
+                    { q: '4/5', a: '0.8' },
+                    { q: '1/8', a: '0.125' },
+                    { q: '3/8', a: '0.375' },
+                    { q: '5/8', a: '0.625' },
+                    { q: '7/8', a: '0.875' },
+                    { q: '1/10', a: '0.1' },
+                    { q: '1/3', a: '0.333' },
+                    { q: '2/3', a: '0.666' }
+                ];
+                const f2d = fracToDecTable[random(0, fracToDecTable.length - 1)];
+                answer = f2d.a;
+                question = `${f2d.q} = ?`;
+                const decAlts = ['0.125', '0.25', '0.333', '0.375', '0.4', '0.5', '0.625', '0.666', '0.75', '0.8', '0.875'];
+                alternatives = shuffle([f2d.a, ...shuffle(decAlts.filter(x => x !== f2d.a)).slice(0, 3)]);
+                break;
+
+            case 16: // Decimal a Fracción
+                const decToFracTable = [
+                    { q: '0.5', a: '1/2' },
+                    { q: '0.25', a: '1/4' },
+                    { q: '0.75', a: '3/4' },
+                    { q: '0.2', a: '1/5' },
+                    { q: '0.4', a: '2/5' },
+                    { q: '0.6', a: '3/5' },
+                    { q: '0.8', a: '4/5' },
+                    { q: '0.125', a: '1/8' },
+                    { q: '0.375', a: '3/8' },
+                    { q: '0.625', a: '5/8' },
+                    { q: '0.875', a: '7/8' },
+                    { q: '0.1', a: '1/10' },
+                    { q: '0.333', a: '1/3' },
+                    { q: '0.666', a: '2/3' }
+                ];
+                const d2f = decToFracTable[random(0, decToFracTable.length - 1)];
+                answer = d2f.a;
+                question = `${d2f.q} = ?`;
+                const fracAlts = ['1/2', '1/3', '1/4', '1/5', '2/5', '3/4', '3/5', '1/8', '3/8', '5/8', '7/8', '2/3'];
+                alternatives = shuffle([d2f.a, ...shuffle(fracAlts.filter(x => x !== d2f.a)).slice(0, 3)]);
+                break;
+
+            case 17: // MCM y MCD
+                // Helper function for GCD
+                const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+                const lcm = (a, b) => (a * b) / gcd(a, b);
+
+                const mcmMcdTypes = [
+                    () => {
+                        const nums = [[12, 18], [15, 20], [8, 12], [6, 9], [10, 15], [14, 21], [16, 24], [18, 27]];
+                        const [a, b] = nums[random(0, nums.length - 1)];
+                        return { q: `MCM(${a}, ${b})`, a: lcm(a, b) };
+                    },
+                    () => {
+                        const nums = [[12, 18], [15, 20], [24, 36], [48, 60], [30, 45], [28, 42], [36, 54]];
+                        const [a, b] = nums[random(0, nums.length - 1)];
+                        return { q: `MCD(${a}, ${b})`, a: gcd(a, b) };
+                    }
+                ];
+                const mcmMcd = mcmMcdTypes[random(0, mcmMcdTypes.length - 1)]();
+                answer = mcmMcd.a;
+                question = `${mcmMcd.q} = ?`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 18: // Potencias de 10
+                const pow10Types = [
+                    () => {
+                        const coef = [1.5, 2.5, 3.5, 4.5, 2, 3, 5, 7][random(0, 7)];
+                        const exp = random(2, 4);
+                        return { q: `${coef} × 10${exp === 2 ? '²' : exp === 3 ? '³' : '⁴'}`, a: coef * Math.pow(10, exp) };
+                    },
+                    () => {
+                        const base = [100, 1000, 10000][random(0, 2)];
+                        const mult = random(2, 9);
+                        return { q: `${mult} × ${base}`, a: mult * base };
+                    },
+                    () => {
+                        const exp = random(2, 5);
+                        return { q: `10${exp === 2 ? '²' : exp === 3 ? '³' : exp === 4 ? '⁴' : '⁵'}`, a: Math.pow(10, exp) };
+                    }
+                ];
+                const pow10 = pow10Types[random(0, pow10Types.length - 1)]();
+                answer = pow10.a;
+                question = `${pow10.q} = ?`;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+
+            case 19: // Logaritmos básicos
+                const logTable = [
+                    { q: 'log₂(8)', a: 3 },
+                    { q: 'log₂(16)', a: 4 },
+                    { q: 'log₂(32)', a: 5 },
+                    { q: 'log₂(64)', a: 6 },
+                    { q: 'log₂(4)', a: 2 },
+                    { q: 'log₁₀(100)', a: 2 },
+                    { q: 'log₁₀(1000)', a: 3 },
+                    { q: 'log₁₀(10000)', a: 4 },
+                    { q: 'log₁₀(10)', a: 1 },
+                    { q: 'log₃(9)', a: 2 },
+                    { q: 'log₃(27)', a: 3 },
+                    { q: 'log₅(25)', a: 2 },
+                    { q: 'log₅(125)', a: 3 }
+                ];
+                const logQ = logTable[random(0, logTable.length - 1)];
+                answer = logQ.a;
+                question = `${logQ.q} = ?`;
+                alternatives = shuffle([logQ.a, logQ.a + 1, logQ.a - 1, logQ.a + 2].filter(x => x > 0));
+                break;
+
+            case 20: // Regla de Tres Check
+                /* 
+                   Format: "a es a b como c es a ?"
+                   Refers to a/b = c/x  => x = (b*c)/a
+                   We want integer results.
+                   Let ratio = b/a. Or x = c * (b/a).
+                   Generate a, b, c such that result is integer.
+                */
+                const r3Types = [
+                    () => {
+                        // Direct integer scaling
+                        const a = random(2, 6);
+                        const factor = random(2, 5);
+                        const b = a * factor;  // b is multiple of a
+                        const c = random(2, 6) * a; // c is also multiple of a? Not necessarily, but result (b*c)/a must be int.
+                        // x = (b*c)/a = (a*factor * c)/a = factor * c.
+                        // So if b is multiple of a, result is integer.
+                        return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    },
+                    () => {
+                        // b not multiple of a, but c is multiple of a
+                        const a = random(3, 9);
+                        const b = random(2, 20); // arbitrary
+                        const k = random(2, 5);
+                        const c = a * k; // c is multiple of a
+                        // x = (b*c)/a = (b * a*k)/a = b*k
+                        return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    },
+                    () => {
+                        // Simple classic: 2 is to 4 as 5 is to 10
+                        const a = random(2, 5);
+                        const b = random(2, 5) * 2;
+                        const c = a * 10;
+                        return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    }
+                ];
+                const r3 = r3Types[random(0, r3Types.length - 1)]();
+                answer = r3.a;
+                question = r3.q;
+                alternatives = generateSimilarNumbers(answer, 4);
+                break;
+        }
+
+        return { question, answer: String(answer), alternatives: alternatives.map(String) };
+    }
+
+    function generateSimilarNumbers(correct, count) {
+        // Generate alternatives that are VERY similar to the correct answer:
+        // - Same ending digit (last digit matches)
+        // - Close multiples or within small range
+        const nums = new Set();
+        nums.add(correct);
+
+        const lastDigit = Math.abs(correct) % 10;
+        const magnitude = Math.max(10, Math.floor(Math.abs(correct) / 10) * 10);
+
+        // Strategy 1: Add/subtract multiples of 10 (keeps same last digit)
+        const offsets = [-30, -20, -10, 10, 20, 30, -40, 40, -50, 50];
+        shuffle(offsets);
+
+        for (const offset of offsets) {
+            if (nums.size >= count) break;
+            const alt = correct + offset;
+            if (alt > 0 && alt !== correct) {
+                nums.add(alt);
+            }
+        }
+
+        // Strategy 2: If still need more, swap middle digits
+        if (nums.size < count && correct > 99) {
+            const str = String(correct);
+            for (let i = 0; i < str.length - 1 && nums.size < count; i++) {
+                // Swap adjacent digits
+                const arr = str.split('');
+                [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                const swapped = parseInt(arr.join(''));
+                if (swapped !== correct && swapped > 0) {
+                    nums.add(swapped);
+                }
+            }
+        }
+
+        // Strategy 3: Change one digit slightly
+        if (nums.size < count && correct > 9) {
+            const str = String(correct);
+            for (let i = 0; i < str.length - 1 && nums.size < count; i++) {
+                const digit = parseInt(str[i]);
+                for (const delta of [1, -1, 2, -2]) {
+                    if (nums.size >= count) break;
+                    const newDigit = (digit + delta + 10) % 10;
+                    const newStr = str.substring(0, i) + newDigit + str.substring(i + 1);
+                    const alt = parseInt(newStr);
+                    if (alt !== correct && alt > 0) {
+                        nums.add(alt);
+                    }
+                }
+            }
+        }
+
+        // Fallback: just add close numbers
+        let fallback = 1;
+        while (nums.size < count) {
+            const alt = correct + (fallback * 10);
+            if (!nums.has(alt) && alt > 0) nums.add(alt);
+            const alt2 = correct - (fallback * 10);
+            if (!nums.has(alt2) && alt2 > 0) nums.add(alt2);
+            fallback++;
+        }
+
+        return shuffle([...nums].slice(0, count));
+    }
+
+    function generateSimilarFractions(num, den, count) {
+        const fracs = new Set([`${num}/${den}`]);
+        while (fracs.size < count) {
+            const newNum = num + random(-3, 3);
+            const newDen = den + random(-2, 2);
+            if (newDen > 0 && newDen !== 0) fracs.add(`${newNum}/${Math.abs(newDen)}`);
+        }
+        return shuffle([...fracs]);
+    }
+
+    // ========== Timer Functions ==========
+    function startTimer() {
+        GameState.timeRemaining = GameState.difficultySettings[GameState.difficulty].time;
+        GameState.questionStartTime = Date.now();
+        updateTimerDisplay();
+
+        GameState.timerInterval = setInterval(() => {
+            GameState.timeRemaining--;
+            updateTimerDisplay();
+
+            if (GameState.timeRemaining <= 0) {
+                clearInterval(GameState.timerInterval);
+                submitAnswer(true);
+            }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const display = document.getElementById('timer-display');
+        const text = document.getElementById('timer-text');
+        text.textContent = GameState.timeRemaining;
+
+        display.classList.remove('warning', 'danger');
+        if (GameState.timeRemaining <= 5) display.classList.add('danger');
+        else if (GameState.timeRemaining <= 10) display.classList.add('warning');
+    }
+
+    function stopTimer() {
+        clearInterval(GameState.timerInterval);
+        return Date.now() - GameState.questionStartTime;
+    }
+
+    // ========== Game Flow ==========
+    function startGame() {
+        // Filter chapters based on selection
+        if (GameState.selectedChapters.length === 0) {
+            alert('Por favor selecciona al menos un capítulo');
+            return;
+        }
+
+        // Create playable chapters array from selected IDs
+        GameState.playableChapters = GameState.chapters.filter(c =>
+            GameState.selectedChapters.includes(c.id)
+        );
+
+        GameState.currentChapter = 0;
+        GameState.totalCorrect = 0;
+        GameState.totalExercises = 0;
+        GameState.allResults = [];
+        GameState.totalStartTime = Date.now();
+
+        startChapter();
+    }
+
+    function startChapter() {
+        const chapter = GameState.playableChapters[GameState.currentChapter];
+        GameState.currentExercise = 0;
+        GameState.chapterResults = [];
+        GameState.chapterExercises = [];
+
+        // Generate exercises for this chapter
+        for (let i = 0; i < chapter.exerciseCount; i++) {
+            GameState.chapterExercises.push(generateExercise(chapter.id));
+        }
+
+        showChapterIntro(chapter);
+    }
+
+    function showChapterIntro(chapter) {
+        showScreen('exercise-screen');
+        const intro = document.getElementById('chapter-intro');
+        intro.classList.remove('hidden');
+
+        document.getElementById('intro-chapter-num').textContent = chapter.id;
+        document.getElementById('intro-chapter-icon').textContent = chapter.icon;
+        document.getElementById('intro-chapter-name').textContent = chapter.name;
+
+        let countdown = 3;
+        const countdownEl = document.getElementById('intro-countdown');
+        countdownEl.textContent = countdown;
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            if (countdown > 0) {
+                countdownEl.textContent = countdown;
+            } else {
+                clearInterval(countdownInterval);
+                intro.classList.add('hidden');
+                showExercise();
+            }
+        }, 1000);
+    }
+
+    function showExercise() {
+        const chapter = GameState.playableChapters[GameState.currentChapter];
+        const exercise = GameState.chapterExercises[GameState.currentExercise];
+
+        // Update header
+        document.getElementById('current-chapter').textContent = `Cap. ${chapter.id}: ${chapter.name}`;
+        document.getElementById('exercise-count').textContent = `Ejercicio ${GameState.currentExercise + 1} de ${chapter.exerciseCount}`;
+        document.getElementById('question-number').textContent = `Pregunta ${GameState.currentExercise + 1}`;
+        // Only add '= ?' if the question doesn't already contain '?' or '≈'
+        const questionText = exercise.question.includes('?') || exercise.question.includes('≈')
+            ? exercise.question
+            : exercise.question + ' = ?';
+        document.getElementById('question-display').textContent = questionText;
+
+        // Update progress bar
+        const totalExercisesCount = GameState.playableChapters.reduce((acc, ch) => acc + ch.exerciseCount, 0);
+        let exercisesPassed = 0;
+        for (let i = 0; i < GameState.currentChapter; i++) {
+            exercisesPassed += GameState.playableChapters[i].exerciseCount;
+        }
+        exercisesPassed += GameState.currentExercise;
+
+        const totalProgress = (exercisesPassed / totalExercisesCount) * 100;
+        document.getElementById('progress-bar').style.width = `${totalProgress}%`;
+
+        // Set up input mode
+        const writeMode = document.getElementById('write-mode');
+        const choiceMode = document.getElementById('choice-mode');
+
+        if (GameState.mode === 'write') {
+            writeMode.classList.remove('hidden');
+            choiceMode.classList.add('hidden');
+            const input = document.getElementById('answer-input');
+            input.value = '';
+            input.focus();
+        } else {
+            writeMode.classList.add('hidden');
+            choiceMode.classList.remove('hidden');
+            GameState.selectedChoice = null;
+
+            const buttons = choiceMode.querySelectorAll('.choice-btn');
+            buttons.forEach((btn, i) => {
+                const valueSpan = btn.querySelector('.choice-value');
+                if (valueSpan) {
+                    valueSpan.textContent = exercise.alternatives[i];
+                }
+                btn.className = 'choice-btn';
+                btn.onclick = () => selectChoice(btn, i);
+            });
+        }
+
+        startTimer();
+    }
+
+    function selectChoice(btn, index) {
+        document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        GameState.selectedChoice = index;
+    }
+
+    function submitAnswer(timeout = false) {
+        const timeTaken = stopTimer();
+        const exercise = GameState.chapterExercises[GameState.currentExercise];
+
+        let userAnswer;
+        if (GameState.mode === 'write') {
+            userAnswer = document.getElementById('answer-input').value.trim();
+        } else {
+            userAnswer = GameState.selectedChoice !== null ? exercise.alternatives[GameState.selectedChoice] : '';
+        }
+
+        const isCorrect = userAnswer.toLowerCase() === exercise.answer.toLowerCase();
+
+        if (isCorrect) {
+            GameState.totalCorrect++;
+            SoundManager.success();
+            // XP Calculation
+            const baseXp = 100;
+            const timeBonus = Math.max(0, Math.floor((GameState.difficultySettings[GameState.difficulty].time * 1000 - timeTaken) / 1000) * 10);
+            const totalXp = baseXp + timeBonus;
+            GameState.xp += totalXp;
+            checkLevelUp();
+            updateLevelUI();
+        } else {
+            SoundManager.error();
+        }
+
+        GameState.totalExercises++;
+
+        const result = {
+            question: exercise.question,
+            userAnswer: timeout ? '(Tiempo agotado)' : userAnswer,
+            correctAnswer: exercise.answer,
+            isCorrect,
+            timeTaken: Math.round(timeTaken / 1000)
+        };
+
+        GameState.chapterResults.push(result);
+        GameState.allResults.push(result);
+
+        // Next exercise or chapter results
+        GameState.currentExercise++;
+        if (GameState.currentExercise < GameState.chapterExercises.length) {
+            showExercise();
+        } else {
+            showChapterResults();
+        }
+    }
+
+    function showChapterResults() {
+        const chapter = GameState.playableChapters[GameState.currentChapter];
+        const correct = GameState.chapterResults.filter(r => r.isCorrect).length;
+        const incorrect = GameState.chapterResults.length - correct;
+        const percentage = Math.round((correct / GameState.chapterResults.length) * 100);
+        const avgTime = Math.round(GameState.chapterResults.reduce((sum, r) => sum + r.timeTaken, 0) / GameState.chapterResults.length);
+
+        // Update header
+        const icon = percentage >= 80 ? '🎉' : percentage >= 60 ? '👍' : percentage >= 40 ? '💪' : '📚';
+        document.getElementById('chapter-complete-icon').textContent = icon;
+        document.getElementById('chapter-icon').textContent = chapter.icon;
+        document.getElementById('chapter-name-text').textContent = chapter.name;
+        document.getElementById('chapter-results-title').textContent = `Capítulo ${chapter.id} Completado`;
+        document.getElementById('chapter-score').textContent = `${correct}/${GameState.chapterResults.length}`;
+        document.getElementById('chapter-percentage').textContent = `${percentage}%`;
+
+        // Update stats
+        document.getElementById('stat-correct').textContent = correct;
+        document.getElementById('stat-incorrect').textContent = incorrect;
+        document.getElementById('stat-avg-time').textContent = `${avgTime}s`;
+
+        // Update accumulated
+        document.getElementById('accumulated-score').textContent = `${GameState.totalCorrect}/${GameState.totalExercises}`;
+
+        // Populate results list
+        const list = document.getElementById('chapter-results-list');
+        list.innerHTML = '';
+
+        GameState.chapterResults.forEach((r, i) => {
+            const item = document.createElement('div');
+            item.className = `result-item ${r.isCorrect ? 'correct' : 'incorrect'}`;
+            item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="result-question">${r.question}</span>
+                        <span class="result-time">(${r.timeTaken}s)</span>
+                    </div>
+                    <span class="result-answer ${r.isCorrect ? 'correct' : 'incorrect'}">
+                        ${r.isCorrect ? '✓ ' + r.userAnswer : '✗ ' + r.userAnswer + ' → ' + r.correctAnswer}
+                    </span>
+                `;
+            list.appendChild(item);
+        });
+
+        // Update next button text
+        const nextBtn = document.getElementById('next-chapter-btn');
+        if (GameState.currentChapter >= GameState.chapters.length - 1) {
+            nextBtn.textContent = '🏆 Ver Resultados Finales';
+        } else {
+            nextBtn.textContent = 'Siguiente Capítulo →';
+        }
+
+        showScreen('chapter-results-screen');
+    }
+
+    function nextChapter() {
+        GameState.currentChapter++;
+        if (GameState.currentChapter < GameState.playableChapters.length) {
+            startChapter();
+        } else {
+            showFinalResults();
+        }
+    }
+
+    function showFinalResults() {
+        // Save Session History
+        const totalTime = Math.round((Date.now() - GameState.totalStartTime) / 1000);
+        const sessionData = {
+            date: Date.now(),
+            score: GameState.totalCorrect * 100, // Simple score metric
+            correct: GameState.totalCorrect,
+            total: GameState.totalExercises,
+            xp: GameState.allResults.length * 100, // approx
+            time: totalTime
+        };
+
+        GameState.sessionHistory.push(sessionData);
+        GameState.highScores.push({ date: Date.now(), score: sessionData.score });
+
+        // Keep history limited
+        if (GameState.sessionHistory.length > 20) GameState.sessionHistory.shift();
+        if (GameState.highScores.length > 20) GameState.highScores.sort((a, b) => b.score - a.score).pop();
+
+        Persistence.save();
+
+        const minutes = Math.floor(totalTime / 60);
+        const seconds = totalTime % 60;
+        const accuracy = Math.round((GameState.totalCorrect / GameState.totalExercises) * 100);
+        const avgTime = Math.round(GameState.allResults.reduce((sum, r) => sum + r.timeTaken, 0) / GameState.allResults.length);
+
+        // Update main score
+        document.getElementById('final-score').textContent = `${GameState.totalCorrect}/${GameState.totalExercises}`;
+        document.getElementById('final-time').textContent = `Tiempo total: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        // Grade badge
+        const gradeBadge = document.getElementById('grade-badge');
+        let gradeText, gradeClass;
+        if (accuracy >= 90) {
+            gradeText = '🏆 Excelente';
+            gradeClass = 'excellent';
+            document.getElementById('final-score-display').classList.add('celebrate');
+        } else if (accuracy >= 70) {
+            gradeText = '⭐ Muy Bien';
+            gradeClass = 'good';
+        } else if (accuracy >= 50) {
+            gradeText = '👍 Bien';
+            gradeClass = 'average';
+        } else {
+            gradeText = '📚 Sigue Practicando';
+            gradeClass = 'needs-work';
+        }
+        gradeBadge.textContent = gradeText;
+        gradeBadge.className = `grade-badge ${gradeClass}`;
+
+        // Update stats grid
+        document.getElementById('final-correct').textContent = GameState.totalCorrect;
+        document.getElementById('final-total').textContent = GameState.totalExercises;
+        document.getElementById('final-avg-time').textContent = `${avgTime}s`;
+        document.getElementById('final-accuracy').textContent = `${accuracy}%`;
+
+        // Populate all results
+        const list = document.getElementById('final-results-list');
+        list.innerHTML = '';
+
+        GameState.allResults.forEach((r, i) => {
+            const item = document.createElement('div');
+            item.className = `result-item ${r.isCorrect ? 'correct' : 'incorrect'}`;
+            item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span class="result-question">${r.question}</span>
+                        <span class="result-time">(${r.timeTaken}s)</span>
+                    </div>
+                    <span class="result-answer ${r.isCorrect ? 'correct' : 'incorrect'}">
+                        ${r.isCorrect ? '✓' : '✗ → ' + r.correctAnswer}
+                    </span>
+                `;
+            list.appendChild(item);
+        });
+
+        showScreen('final-results-screen');
+    }
+
+    // ========== Event Listeners ==========
+    document.querySelectorAll('.difficulty-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.difficulty-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            GameState.difficulty = btn.dataset.difficulty;
+        });
+    });
+
+    document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            GameState.mode = btn.dataset.mode;
+        });
+    });
+
+    // ========== Chapter Selector ==========
+    function populateChapterGrid() {
+        const grid = document.getElementById('chapter-grid');
+        grid.innerHTML = '';
+
+        GameState.chapters.forEach(chapter => {
+            const isSelected = GameState.selectedChapters.includes(chapter.id);
+            const checkbox = document.createElement('label');
+            checkbox.className = `chapter-checkbox ${isSelected ? 'selected' : ''}`;
+            checkbox.dataset.chapterId = chapter.id;
+            checkbox.innerHTML = `
+                <span class="check-icon">${isSelected ? '✓' : ''}</span>
+                <span class="ch-name">${chapter.id}. ${chapter.name}</span>
+            `;
+            checkbox.addEventListener('click', () => toggleChapter(chapter.id));
+            grid.appendChild(checkbox);
+        });
+
+        updateChapterCount();
+    }
+
+    function toggleChapter(chapterId) {
+        const index = GameState.selectedChapters.indexOf(chapterId);
+        if (index > -1) {
+            GameState.selectedChapters.splice(index, 1);
+        } else {
+            GameState.selectedChapters.push(chapterId);
+        }
+        populateChapterGrid();
+    }
+
+    function updateChapterCount() {
+        const total = GameState.chapters.length;
+        const selected = GameState.selectedChapters.length;
+        document.querySelector('.chapter-selector-toggle .toggle-text').textContent =
+            `📚 Capítulos Seleccionados (${selected}/${total})`;
+    }
+
+    // Toggle chapter selector panel
+    document.getElementById('chapter-selector-toggle').addEventListener('click', () => {
+        const toggle = document.getElementById('chapter-selector-toggle');
+        const content = document.getElementById('chapter-selector-content');
+        toggle.classList.toggle('open');
+        content.classList.toggle('open');
+    });
+
+    // Select all chapters
+    document.getElementById('select-all-chapters').addEventListener('click', () => {
+        GameState.selectedChapters = GameState.chapters.map(c => c.id);
+        populateChapterGrid();
+    });
+
+    // Deselect all chapters
+    document.getElementById('deselect-all-chapters').addEventListener('click', () => {
+        GameState.selectedChapters = [];
+        populateChapterGrid();
+    });
+
+    // Initialize chapter grid
+    populateChapterGrid();
+
+    document.getElementById('start-btn').addEventListener('click', startGame);
+    document.getElementById('submit-btn').addEventListener('click', () => submitAnswer(false));
+    document.getElementById('next-chapter-btn').addEventListener('click', nextChapter);
+    document.getElementById('restart-btn').addEventListener('click', () => {
+        showScreen('menu-screen');
+    });
+
+    // Symbol buttons - append symbol to input
+    document.querySelectorAll('.symbol-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const input = document.getElementById('answer-input');
+            const symbol = btn.dataset.symbol;
+            input.value += symbol;
+            input.focus();
+        });
+    });
+
+    // ========== Pause System ==========
+    let isPaused = false;
+    let pausedTimeRemaining = 0;
+
+    function togglePause() {
+        if (!document.getElementById('exercise-screen').classList.contains('active')) return;
+
+        isPaused = !isPaused;
+        const overlay = document.getElementById('pause-overlay');
+
+        if (isPaused) {
+            // Pause
+            overlay.classList.add('active');
+            pausedTimeRemaining = GameState.timeRemaining;
+            clearInterval(GameState.timerInterval);
+        } else {
+            // Resume
+            overlay.classList.remove('active');
+            GameState.timeRemaining = pausedTimeRemaining;
+            GameState.timerInterval = setInterval(() => {
+                GameState.timeRemaining--;
+                updateTimerDisplay();
+                if (GameState.timeRemaining <= 0) {
+                    clearInterval(GameState.timerInterval);
+                    submitAnswer(true);
+                }
+            }, 1000);
+        }
+    }
+
+    // ========== Global Keyboard Controls ==========
+    document.addEventListener('keydown', (e) => {
+        // Space to pause/resume (only during exercise)
+        if (e.code === 'Space' && document.getElementById('exercise-screen').classList.contains('active')) {
+            e.preventDefault();
+            togglePause();
+            return;
+        }
+
+        // Don't process other keys if paused
+        if (isPaused) return;
+
+        // Enter to confirm (works in both modes)
+        if (e.key === 'Enter' && document.getElementById('exercise-screen').classList.contains('active')) {
+            e.preventDefault();
+            submitAnswer(false);
+            return;
+        }
+
+        // Number keys 1-4 for choice mode
+        if (GameState.mode === 'choice' && document.getElementById('exercise-screen').classList.contains('active')) {
+            const key = e.key;
+            if (['1', '2', '3', '4'].includes(key)) {
+                const index = parseInt(key) - 1;
+                const buttons = document.querySelectorAll('.choice-btn');
+                if (buttons[index]) {
+                    buttons.forEach(b => b.classList.remove('selected'));
+                    buttons[index].classList.add('selected');
+                    GameState.selectedChoice = index;
+                }
+            }
+        }
+    });
+
+    // ========== Particles ==========
+    function createParticles() {
+        const container = document.getElementById('particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+            const colors = ['#7c3aed', '#06b6d4', '#22c55e', '#f59e0b'];
+            particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+            container.appendChild(particle);
+        }
+    }
+
+
+
+    document.addEventListener('DOMContentLoaded', createParticles);
+    // ========== Records Logic ==========
+    function showRecords() {
+        const container = document.getElementById('records-content');
+        container.innerHTML = '';
+
+        // High Scores
+        const scoresSection = document.createElement('div');
+        scoresSection.className = 'record-card';
+        scoresSection.innerHTML = '<div class="record-title">🏆 Top Puntajes</div><div class="record-list"></div>';
+        const scoresList = scoresSection.querySelector('.record-list');
+
+        if (GameState.highScores.length === 0) {
+            scoresList.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 0.8rem;">Aún no hay récords</div>';
+        } else {
+            GameState.highScores.sort((a, b) => b.score - a.score).slice(0, 5).forEach((s, i) => {
+                scoresList.innerHTML += `
+                    <div class="record-item">
+                        <span><span class="record-rank">#${i + 1}</span> ${new Date(s.date).toLocaleDateString()}</span>
+                        <span style="color: var(--accent-secondary); font-weight:bold;">${s.score} pts</span>
+                    </div>`;
+            });
+        }
+        container.appendChild(scoresSection);
+
+        // History
+        const historySection = document.createElement('div');
+        historySection.className = 'record-card';
+        historySection.innerHTML = '<div class="record-title">📜 Historial Reciente</div><div class="record-list"></div>';
+        const historyList = historySection.querySelector('.record-list');
+
+        if (GameState.sessionHistory.length === 0) {
+            historyList.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 0.8rem;">Sin partidas recientes</div>';
+        } else {
+            GameState.sessionHistory.slice().reverse().slice(0, 5).forEach(s => {
+                historyList.innerHTML += `
+                    <div class="record-item">
+                        <span>${new Date(s.date).toLocaleDateString()}</span>
+                        <span>${s.correct}/${s.total} (${s.xp} XP)</span>
+                    </div>`;
+            });
+        }
+        container.appendChild(historySection);
+
+        showScreen('records-screen');
+    }
+
+    // ========== Initialization & Events ==========
+
+    // Load saved data
+    Persistence.load();
+
+    // Top Bar Listeners
+    document.getElementById('records-btn').addEventListener('click', () => {
+        SoundManager.click();
+        showRecords();
+    });
+
+    document.getElementById('mute-btn').addEventListener('click', () => {
+        SoundManager.isMuted = !SoundManager.isMuted;
+        document.getElementById('mute-btn').textContent = SoundManager.isMuted ? '🔇' : '🔊';
+        SoundManager.click();
+        if (!SoundManager.isMuted) SoundManager.init();
+    });
+
+    document.getElementById('records-back-btn').addEventListener('click', () => {
+        SoundManager.click();
+        showScreen('menu-screen');
+    });
+
+    // Tutorial Listeners
+    document.getElementById('tutorial-btn').addEventListener('click', () => {
+        SoundManager.click();
+        const container = document.getElementById('video-container');
+        // Usar video de "Regla de 3 Super Facil - Daniel Carreón"
+        container.innerHTML = '<iframe width="100%" height="100%" src="./MAT_RAPIDA.mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border:none;"></iframe>';
+        showScreen('tutorial-screen');
+    });
+
+    document.getElementById('tutorial-back-btn').addEventListener('click', () => {
+        SoundManager.click();
+        const container = document.getElementById('video-container');
+        container.innerHTML = ''; // Stop video
+        showScreen('menu-screen');
+    });
+
+    // Update existing listeners for Sound
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!btn.id.includes('mute')) SoundManager.init(); // Init audio context on any click
+            SoundManager.click();
+        });
+    });
+
+
+    //WALLPAPEER DEL POPUP
+    var fondogod = [
+        "https://c.tenor.com/M1z8DYZXVjkAAAAC/wallpaper.gif",
+        "https://i.pinimg.com/originals/5f/8b/4a/5f8b4a682b9bb09ec3bac28d2ea4ad47.jpg",
+        "https://giffiles.alphacoders.com/351/35116.gif",
+        "https://c.tenor.com/WeOTjjZcq38AAAAC/starry-night-anime.gif",
+        "https://c.tenor.com/IqSp4ITuCdcAAAAC/satorou-gojo-satoru-gojo.gif",
+        "https://c.tenor.com/J2X-zwLs33AAAAAC/neko-wallpaper.gif",
+        "https://cutewallpaper.org/26/best-anime-wallpaper-animated-gif/waifus-wallpaper-4k-gif-waifus-gifs-tenor-supports-processing-image-amp-gif-amp-video-at-the-same-time-lorna-shroyer.gif", "https://c.tenor.com/6LyXLgF8ksUAAAAd/anime-gif.gif", "https://giffiles.alphacoders.com/147/14784.gif", "https://c.tenor.com/_f2m8iblpNUAAAAM/anime.gif", "https://i.pinimg.com/originals/da/cc/5f/dacc5f9430c35c7af60e62d67a8abec7.gif", "https://thumbs.gfycat.com/NippyExhaustedAsiaticmouflon-max-1mb.gif", "https://wallpaperaccess.com/full/2641099.gif", "https://images.pexels.com/photos/2486168/pexels-photo-2486168.jpeg", "https://isenacode.com/wp-content/uploads/2020/09/wallpaper-iphone-w39-1-scaled.jpg", "https://www.redhoku.com/wp-content/uploads/IPhone_xs_wallpaper_-5ce861ae-18a8-4744-9641-13babbf54801-576x1024.jpg", "https://i.pinimg.com/originals/81/28/a4/8128a49d5f7b10b38d9aa6dd17544198.gif", "https://acegif.com/wp-content/uploads/2021/4fh5wi/animated-wallpaper-240x320px-acegif-38.gif",
+        "https://c.tenor.com/M1z8DYZXVjkAAAAC/wallpaper.gif",
+        "https://i.pinimg.com/originals/44/f0/df/44f0df362bbcf1e1fdbf39190e2a3818.gif",
+        "https://acegif.com/wp-content/uploads/2021/4fh5wi/animated-wallpaper-240x320px-acegif-38.gif",
+        "https://i.giphy.com/media/pOLspHmrKmQmc/giphy.gif",
+        "https://raw.githubusercontent.com/adi1090x/files/master/dynamic-wallpaper/desert.gif",
+        "https://wallpaperaccess.com/full/869910.gif",
+        "https://64.media.tumblr.com/6cc55cb55e28123e2ad357d9f07c7bc5/tumblr_psa72bs62w1upcvga_540.gif",
+        "https://swall.teahub.io/photos/small/292-2927812_burbujas-de-colores-gif.jpg",
+        "https://i.pinimg.com/originals/33/1d/34/331d344c012c1ff4307858f8c9f38706.gif",
+        "https://i.pinimg.com/736x/32/5b/3b/325b3b3520e91b88299725ce8cca315a.jpg",
+        "http://www.solofondos.com/wp-content/uploads/2016/03/astronaut-in-the-middle-of-space-space-wallpaper-hd-planets-around-him-sky-filled-with-stars.jpg",
+        "https://i.pinimg.com/736x/cf/2e/a8/cf2ea86518efd2e38f7b1e44ab108cd4.jpg",
+        "https://w0.peakpx.com/wallpaper/305/842/HD-wallpaper-paisajes-lighthouse-night-water.jpg",
+        "https://wallpapercave.com/wp/wp7504908.jpg",
+        "https://preview.redd.it/gdsbdf97ihq31.png?auto=webp&s=1c659c7827668b90ec2cae6b3a22bde9dd70fb19",
+        "https://cdn.wallpapersafari.com/22/42/JCOAlr.jpg",
+        "https://wallpapercave.com/wp/wp4768945.jpg",
+        "https://wallpaperaccess.com/full/1682077.png",
+        "https://wallpaperaccess.com/full/797185.png",
+        "https://img.lovepik.com/background/20211029/medium/lovepik-cell-phone-wallpaper-for-boys-background-image_400268370.jpg",
+        "https://wallpapercave.com/wp/wp4788621.jpg",
+        "https://www.ixpap.com/images/2021/02/phone-wallpapers-ixpap-15.jpg",
+        "https://www.teahub.io/photos/full/288-2886235_cyberpunk-2077-wallpaper-phone.jpg",
+        "https://c.tenor.com/uLwvYaB7_68AAAAM/convenience-store-pixel-art.gif",
+        "https://wallpapercave.com/wp/wp6650166.gif",
+        "https://64.media.tumblr.com/fc94627a6c3fed6de7d6e76e08e4421a/tumblr_pb1cn2xhN81rnbw6mo1_1280.gif",
+        "https://64.media.tumblr.com/9214f4d92f9ec02f0ef9099b03592591/tumblr_pblgs4H8WL1rnbw6mo1_1280.gif"
+    ];
+    var número = Math.floor((Math.random() * fondogod.length));
+    document.body.style.backgroundImage = `linear-gradient(rgba(29, 8, 65, 0.6), rgba(4, 51, 59, 0.6)), url('${fondogod[número]}')`;
+
+</script>
+</body>
+
+</html>
