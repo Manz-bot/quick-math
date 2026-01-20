@@ -51,7 +51,8 @@ const Persistence = {
             highScores: GameState.highScores,
             sessionHistory: GameState.sessionHistory,
             bestStreak: GameState.bestStreak || 0,
-            powerups: GameState.powerups
+            powerups: GameState.powerups,
+            selectedChapters: GameState.selectedChapters
         };
         localStorage.setItem('matematica_rapida_save', JSON.stringify(data));
     },
@@ -64,6 +65,7 @@ const Persistence = {
             GameState.highScores = data.highScores || [];
             GameState.sessionHistory = data.sessionHistory || [];
             GameState.bestStreak = data.bestStreak || 0;
+            GameState.selectedChapters = data.selectedChapters || [1, 2, 3, 4, 5, 6, 7];
             if (data.powerups) {
                 GameState.powerups = data.powerups;
             }
@@ -158,7 +160,7 @@ const GameState = {
     ],
 
     // Selected chapters for gameplay (default: first 7)
-    selectedChapters: [1, 2, 3, 4, 5, 6, 7],
+    selectedChapters: localStorage.getItem('matematica_rapida_save') ? JSON.parse(localStorage.getItem('matematica_rapida_save')).selectedChapters : [1, 2, 3, 4, 5, 6, 7],
 
     currentChapter: 0,
     currentExercise: 0,
@@ -754,7 +756,7 @@ function generateExercise(chapterId) {
 
         case 20: // Regla de Tres Check
             /* 
-               Format: "a es a b como c es a ?"
+               Format: "a : b ≡ c : ?"
                Refers to a/b = c/x  => x = (b*c)/a
                We want integer results.
                Let ratio = b/a. Or x = c * (b/a).
@@ -769,7 +771,7 @@ function generateExercise(chapterId) {
                     const c = random(2, 6) * a; // c is also multiple of a? Not necessarily, but result (b*c)/a must be int.
                     // x = (b*c)/a = (a*factor * c)/a = factor * c.
                     // So if b is multiple of a, result is integer.
-                    return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    return { q: `${a} : ${b} ≡ ${c} : ?`, a: (b * c) / a };
                 },
                 () => {
                     // b not multiple of a, but c is multiple of a
@@ -778,14 +780,14 @@ function generateExercise(chapterId) {
                     const k = random(2, 5);
                     const c = a * k; // c is multiple of a
                     // x = (b*c)/a = (b * a*k)/a = b*k
-                    return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    return { q: `${a} : ${b} ≡ ${c} : ?`, a: (b * c) / a };
                 },
                 () => {
                     // Simple classic: 2 is to 4 as 5 is to 10
                     const a = random(2, 5);
                     const b = random(2, 5) * 2;
                     const c = a * 10;
-                    return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    return { q: `${a} : ${b} ≡ ${c} : ?`, a: (b * c) / a };
                 }
             ];
             if (isHard) {
@@ -800,14 +802,14 @@ function generateExercise(chapterId) {
                     // x = b*c/a = (kb * kc)/ka ...
                     // random gen: a, b. c = multiple of a / gcd(a,b)
                     const c = (a / gcd(a, b)) * random(2, 5) * random(2, 10);
-                    return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    return { q: `${a} : ${b} ≡ ${c} : ?`, a: (b * c) / a };
                 });
                 r3Types.push(() => {
                     // Large Numbers
                     const a = random(10, 20);
                     const b = a * random(2, 5);
                     const c = random(10, 50);
-                    return { q: `${a} es a ${b} como ${c} es a ?`, a: (b * c) / a };
+                    return { q: `${a} : ${b} ≡ ${c} : ?`, a: (b * c) / a };
                 });
             }
             const r3 = r3Types[random(0, r3Types.length - 1)]();
@@ -928,6 +930,32 @@ function stopTimer() {
     return Date.now() - GameState.questionStartTime;
 }
 
+// Central cleanup function to stop ALL game intervals/timers
+function stopAllTimers() {
+    // Stop main timer
+    if (GameState.timerInterval) {
+        clearInterval(GameState.timerInterval);
+        GameState.timerInterval = null;
+    }
+    // Stop chapter countdown
+    if (GameState.countdownInterval) {
+        clearInterval(GameState.countdownInterval);
+        GameState.countdownInterval = null;
+    }
+    // Stop NoiseRenderer animation
+    if (typeof NoiseRenderer !== 'undefined' && NoiseRenderer.isRunning) {
+        NoiseRenderer.stop();
+    }
+    // Hide floating pause button
+    const pauseBtn = document.getElementById('floating-pause-btn');
+    if (pauseBtn) pauseBtn.classList.add('hidden');
+    // Hide pause overlay if open
+    const pauseOverlay = document.getElementById('pause-overlay');
+    if (pauseOverlay) pauseOverlay.classList.remove('active');
+    // Reset pause state
+    if (typeof isPaused !== 'undefined') isPaused = false;
+}
+
 // ========== Game Flow ==========
 function startGame() {
     // Filter chapters based on selection
@@ -978,12 +1006,19 @@ function showChapterIntro(chapter) {
     const countdownEl = document.getElementById('intro-countdown');
     countdownEl.textContent = countdown;
 
-    const countdownInterval = setInterval(() => {
+    // Clear any existing countdown first
+    if (GameState.countdownInterval) {
+        clearInterval(GameState.countdownInterval);
+    }
+
+    // Store interval in GameState so it can be cleared
+    GameState.countdownInterval = setInterval(() => {
         countdown--;
         if (countdown > 0) {
             countdownEl.textContent = countdown;
         } else {
-            clearInterval(countdownInterval);
+            clearInterval(GameState.countdownInterval);
+            GameState.countdownInterval = null;
             intro.classList.add('hidden');
             showExercise();
         }
@@ -998,11 +1033,21 @@ function showExercise() {
     document.getElementById('current-chapter').textContent = `Cap. ${chapter.id}: ${chapter.name}`;
     document.getElementById('exercise-count').textContent = `Ejercicio ${GameState.currentExercise + 1} de ${chapter.exerciseCount}`;
     document.getElementById('question-number').textContent = `Pregunta ${GameState.currentExercise + 1}`;
+
+    // In Practice Mode, maybe hide total progress or show within chapter?
+    // Current logic sums all playableChapters. If Practice Mode, playableChapters has only 1 chapter.
+    // So progress bar works correctly (0 to 100% of that chapter).
+
     // Only add '= ?' if the question doesn't already contain '?' or '≈'
     const questionText = exercise.question.includes('?') || exercise.question.includes('≈')
         ? exercise.question
         : exercise.question + ' = ?';
-    document.getElementById('question-display').textContent = questionText;
+
+    // Use NoiseRenderer for anti-screenshot text display
+    if (typeof NoiseRenderer !== 'undefined' && NoiseRenderer.canvas) {
+        NoiseRenderer.setText(questionText);
+        NoiseRenderer.start();
+    }
 
     // Update Lives Display
     const livesDisplay = document.getElementById('lives-display');
@@ -1017,6 +1062,10 @@ function showExercise() {
         }
     } else {
         livesDisplay.classList.add('hidden');
+    }
+    // Update pause button visibility
+    if (GameState.difficulty !== 'extreme') {
+        document.getElementById('floating-pause-btn').classList.remove('hidden');
     }
 
     // Update progress bar
@@ -1262,6 +1311,12 @@ function showChapterResults() {
 }
 
 function nextChapter() {
+    // Practice Mode Handling
+    if (GameState.isPracticeMode) {
+        showPracticeScreen(); // Return to practice selection
+        return;
+    }
+
     GameState.currentChapter++;
     if (GameState.currentChapter < GameState.playableChapters.length) {
         startChapter();
@@ -1271,6 +1326,9 @@ function nextChapter() {
 }
 
 function showGameOver() {
+    // Stop all game timers
+    stopAllTimers();
+
     const overlay = document.createElement('div');
     overlay.className = 'pause-overlay active';
     overlay.style.backgroundColor = 'rgba(20, 0, 0, 0.95)';
@@ -1295,6 +1353,9 @@ function showGameOver() {
 }
 
 function showFinalResults() {
+    // Stop all timers before showing results
+    stopAllTimers();
+
     // Save Session History
     const totalTime = Math.round((Date.now() - GameState.totalStartTime) / 1000);
     const sessionData = {
@@ -1431,8 +1492,43 @@ function toggleChapter(chapterId) {
 function updateChapterCount() {
     const total = GameState.chapters.length;
     const selected = GameState.selectedChapters.length;
+
+    // Referencias a elementos
+    const totalTimeEasy = document.getElementById('total-time-easy');
+    const totalTimeMedium = document.getElementById('total-time-medium');
+    const totalTimeHard = document.getElementById('total-time-hard');
+
+    // Función auxiliar para formatear segundos a HH:MM:SS o MM:SS
+    const formatTime = (seconds) => {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+
+        const mmss = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+        // Si hay horas, añade HH al principio, si no, solo MM:SS
+        return h > 0 ? `${h.toString().padStart(2, '0')}:${mmss}` : mmss;
+    };
+
+    // Calcular total de preguntas
+    let totalPreguntas = 0;
+    GameState.selectedChapters.forEach((isSelected, index) => {
+        if (isSelected) {
+            totalPreguntas += GameState.chapters[index].exerciseCount;
+        }
+    });
+
+    // Actualizar texto del selector
     document.querySelector('.chapter-selector-toggle .toggle-text').textContent =
-        `📚 Capítulos Seleccionados (${selected}/${total})`;
+        `📚 Capítulos Seleccionados (${selected}/${total}) | ${totalPreguntas} preguntas`;
+
+    // Calcular y mostrar tiempos formateados
+    totalTimeEasy.textContent = "⏱️ " + formatTime(totalPreguntas * 60);
+    totalTimeMedium.textContent = "⏱️ " + formatTime(totalPreguntas * 30);
+    totalTimeHard.textContent = "⏱️ " + formatTime(totalPreguntas * 18);
+
+    // Guardar en localStorage
+    localStorage.setItem('matematica_rapida_save', JSON.stringify(GameState));
 }
 
 // Toggle chapter selector panel
@@ -1562,22 +1658,53 @@ function showRecords() {
     const container = document.getElementById('records-content');
     container.innerHTML = '';
 
-    // High Scores
+    // High Scores (Podium Style)
     const scoresSection = document.createElement('div');
     scoresSection.className = 'record-card';
-    scoresSection.innerHTML = '<div class="record-title">🏆 Top Puntajes</div><div class="record-list"></div>';
-    const scoresList = scoresSection.querySelector('.record-list');
+    scoresSection.innerHTML = '<div class="record-title">🏆 Top Puntajes</div>';
+
+    // Podium Container
+    const podiumContainer = document.createElement('div');
+    podiumContainer.className = 'podium-container';
+
+    // List for non-podium
+    const scoresList = document.createElement('div');
+    scoresList.className = 'record-list';
 
     if (GameState.highScores.length === 0) {
-        scoresList.innerHTML = '<div style="text-align:center; color: var(--text-muted); font-size: 0.8rem;">Aún no hay récords</div>';
+        scoresSection.innerHTML += '<div style="text-align:center; color: var(--text-muted); font-size: 0.8rem; margin: 1rem;">Aún no hay récords</div>';
     } else {
-        GameState.highScores.sort((a, b) => b.score - a.score).slice(0, 5).forEach((s, i) => {
-            scoresList.innerHTML += `
-                    <div class="record-item">
-                        <span><span class="record-rank">#${i + 1}</span> ${new Date(s.date).toLocaleDateString()}</span>
-                        <span style="color: var(--accent-secondary); font-weight:bold;">${s.score} pts</span>
-                    </div>`;
+        const sortedScores = GameState.highScores.slice().sort((a, b) => b.score - a.score).slice(0, 5);
+
+        // Render Podium (Indices 0, 1, 2 => Rank 1, 2, 3)
+        // Order in DOM for visual centered layout: Rank 2, Rank 1, Rank 3
+        const top3 = [sortedScores[1], sortedScores[0], sortedScores[2]].filter(s => s !== undefined);
+
+        top3.forEach(s => {
+            const rank = sortedScores.indexOf(s) + 1;
+            const spot = document.createElement('div');
+            spot.className = `podium-spot podium-rank-${rank}`;
+            spot.innerHTML = `
+                <div class="podium-score">${s.score} pts</div>
+                <div class="podium-bar">${rank}</div>
+                <div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">${new Date(s.date).toLocaleDateString()}</div>
+            `;
+            podiumContainer.appendChild(spot);
         });
+
+        if (top3.length > 0) scoresSection.appendChild(podiumContainer);
+
+        // Render remaining (Rank 4, 5)
+        sortedScores.slice(3).forEach((s, i) => {
+            const item = document.createElement('div');
+            item.className = 'record-item';
+            item.innerHTML = `
+                <span><span class="record-rank">#${i + 4}</span> ${new Date(s.date).toLocaleDateString()}</span>
+                <span style="color: var(--accent-secondary); font-weight:bold;">${s.score} pts</span>
+            `;
+            scoresList.appendChild(item);
+        });
+        scoresSection.appendChild(scoresList);
     }
     container.appendChild(scoresSection);
 
@@ -2265,6 +2392,11 @@ document.getElementById('radio-btn').addEventListener('click', () => {
 
 // ========== Initialize Systems ==========
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize NoiseRenderer
+    if (typeof NoiseRenderer !== 'undefined') {
+        NoiseRenderer.init();
+    }
+
     RadioManager.init();
     AntiCheat.init();
     AntiCheat.initCursorDetection();
@@ -2312,20 +2444,14 @@ document.getElementById('pause-continue-btn').addEventListener('click', () => {
 });
 
 document.getElementById('pause-menu-btn').addEventListener('click', () => {
-    // Hide pause overlay and go to menu
-    document.getElementById('pause-overlay').classList.remove('active');
-    document.getElementById('floating-pause-btn').classList.add('hidden');
-    isPaused = false;
-    stopTimer();
+    // Stop all timers and cleanup
+    stopAllTimers();
     showScreen('menu-screen');
 });
 
 document.getElementById('pause-exit-btn').addEventListener('click', () => {
-    // Exit game - show final results
-    document.getElementById('pause-overlay').classList.remove('active');
-    document.getElementById('floating-pause-btn').classList.add('hidden');
-    isPaused = false;
-    stopTimer();
+    // Stop all timers and show results
+    stopAllTimers();
     showFinalResults();
 });
 
@@ -2335,7 +2461,9 @@ showExercise = function () {
     originalShowExercise();
 
     if (SpeechManager.enabled) {
-        let questionText = document.getElementById('question-display').textContent;
+        // Read from NoiseRenderer canvas data attribute
+        const canvas = document.getElementById('noise-canvas');
+        let questionText = canvas ? canvas.dataset.text : '';
 
         const replacements = {
             "−": "menos",
@@ -2368,17 +2496,111 @@ showExercise = function () {
             "Ln": "logaritmo natural de",
             "≈": " es aproximadamente",
             "e": "e",
-            ",": " y "
+            ",": " y ",
+            "≡": "como",
+            ":": "es a"
         };
 
         // Reemplaza todos los símbolos usando el mapa anterior
         Object.keys(replacements).forEach(symbol => {
             questionText = questionText.split(symbol).join(replacements[symbol]);
         });
-        console.log(questionText);
         setTimeout(() => SpeechManager.speak(questionText), 300);
     }
 };
 
 // Initialize SpeechManager
 SpeechManager.init();
+
+// ========== Practice Mode Logic (Global) ==========
+
+function populatePracticeGrid() {
+    const grid = document.getElementById('practice-grid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    GameState.chapters.forEach(chapter => {
+        const card = document.createElement('div');
+        card.className = 'practice-card';
+        card.innerHTML = `
+            <div class="practice-icon">${chapter.icon}</div>
+            <div class="practice-name">${chapter.id}. ${chapter.name}</div>
+        `;
+        card.addEventListener('click', () => startPractice(chapter.id));
+        grid.appendChild(card);
+    });
+}
+
+function showPracticeScreen() {
+    // Stop any running timers when returning to practice screen
+    stopAllTimers();
+    populatePracticeGrid();
+    showScreen('practice-screen');
+}
+
+function startPractice(chapterId) {
+    GameState.isPracticeMode = true;
+    GameState.lives = 3;
+
+    // Setup specific chapter
+    const chapter = GameState.chapters.find(c => c.id === chapterId);
+    GameState.playableChapters = [chapter];
+    GameState.selectedChapters = [chapterId];
+
+    // Standard Init
+    GameState.currentChapter = 0;
+    GameState.totalCorrect = 0;
+    GameState.totalExercises = 0;
+    GameState.allResults = [];
+    GameState.totalStartTime = Date.now();
+
+    startChapter();
+}
+
+// Practice Mode Listeners (attached if elements exist)
+const practiceBtn = document.getElementById('practice-mode-menu-btn');
+if (practiceBtn) {
+    practiceBtn.addEventListener('click', () => {
+        SoundManager.click();
+        showPracticeScreen();
+    });
+} else {
+    // Fallback: Try to attach later or delegate
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'practice-mode-menu-btn' || e.target.closest('#practice-mode-menu-btn')) {
+            SoundManager.click();
+            showPracticeScreen();
+        }
+    });
+}
+
+const practiceBackBtn = document.getElementById('practice-back-btn');
+if (practiceBackBtn) {
+    practiceBackBtn.addEventListener('click', () => {
+        SoundManager.click();
+        showScreen('menu-screen');
+    });
+} else {
+    document.addEventListener('click', (e) => {
+        if (e.target.id === 'practice-back-btn' || e.target.closest('#practice-back-btn')) {
+            SoundManager.click();
+            showScreen('menu-screen');
+        }
+    });
+}
+
+// Ensure isPracticeMode is valid in GameState
+if (typeof GameState.isPracticeMode === 'undefined') {
+    GameState.isPracticeMode = false;
+}
+
+// Hook original startGame to reset practice mode
+// We need to be careful not to double hook if we run this script multiple times.
+// But this script is loaded once.
+// Note: We already hooked startGame for anti-cheat reset at line 2320.
+// We can hook it again.
+const originalStartGameForPractice = startGame;
+startGame = function () {
+    GameState.isPracticeMode = false; // Regular game reset
+    originalStartGameForPractice();
+};
